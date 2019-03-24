@@ -2,9 +2,11 @@
 
 This tool verifies whether a give host correctly implements the new in-development <a href="https://github.com/mrisher/smtp-sts">MTA-STS standard</a> for downgrade-resistant secure email. It is very new and not very well tested so don't rely on it's result too much.
 
+Online version: https://mta-sts.wydler.eu/
+
 License: BSD 2-clause license (see LICENSE.txt).
 
-## Installing on Ubuntu 18.04.02 LTS with Apache2
+## Installing application on Ubuntu 18.04 LTS
 
  1. Install dependencies:
 
@@ -31,7 +33,7 @@ License: BSD 2-clause license (see LICENSE.txt).
         $ mkdir /etc/uwsgi/vassals
         $ chmod 755 /etc/uwsgi/vassals
 	
- 3. Create a configuration for this app at `/etc/uwsgi/vassals/mta-sts.ini`:
+ 4. Create a configuration for this app at `/etc/uwsgi/vassals/mta-sts.ini`:
 
     ```ini
 	[uwsgi]
@@ -48,14 +50,35 @@ License: BSD 2-clause license (see LICENSE.txt).
     ```
         $ chmod 644 /etc/uwsgi/vassals/mta-sts.ini
 
- 4. Install Apache2 and dependencies:
+ 5. Restart service:
+ 
+        $ service uwsgi restart		
+
+ 6. Install the application:
+	
+        $ git clone https://github.com/dwydler/mta-sts /var/www/html/mta-sts
+		
+
+ 7. Install a montioring tool for it:
+	
+        $ apt-get install python3-pip
+		
+        $ pip3 install setuptools wheel
+        $ pip3 install uwsgitop
+
+        $ uwsgitop 127.0.0.1:17005
+
+		
+## Installing apache2 on Ubuntu 18.04 LTS
+
+ 1. Install webserver and dependencies:
 
         $ apt-get install apache2 apache2-dev
         $ wget https://github.com/unbit/uwsgi/raw/master/apache2/mod_proxy_uwsgi.c
         $ apxs2 -i -c mod_proxy_uwsgi.c
         $ a2enmod proxy_http
 
- 5. Expand existing webserver configuration with these lines. For example `/etc/apache2/sites-available/000-default.conf`:
+ 2. Expand existing webserver configuration with these lines. For example `/etc/apache2/sites-available/000-default.conf`:
 
     ```apache2
 	<VirtualHost *:80>
@@ -66,25 +89,38 @@ License: BSD 2-clause license (see LICENSE.txt).
 	...
 	</VirtualHost>
     ```
-  
- 6. Install the application:
-	
-        $ git clone https://github.com/dwydler/mta-sts /var/www/html/mta-sts
-	
- 7. Restart both services:
- 
-        $ service uwsgi restart
-        $ service apache2 restart
-  
- 8. Test the application with a browser.
- 
-        $ http(s)://IP-Addresse or FQDN/mta-sts/
-	
- 9. Install a montioring tool for it:
-	
-        $ apt-get install python3-pip
-		
-        $ pip3 install setuptools wheel
-        $ pip3 install uwsgitop
 
-        $ uwsgitop 127.0.0.1:17005
+ 3. Restart service:
+ 
+        $ service apache2 restart
+
+
+## Installing nginx on Ubuntu 18.04 LTS
+
+ 1. Install webserver:
+
+        $ apt-get install nginx
+
+ 2. Expand existing webserver configuration with these lines. For example `/etc/nginx/sites-enabled/default`:
+
+    ```nginx
+		# proxy_cache_bypass $http_upgrade;
+	}
+	...
+	location = /mta-sts/api {
+		include uwsgi_params;
+		uwsgi_pass unix:/tmp/mta-sts.sock;
+	}
+	...
+	# pass the PHP scripts to FastCGI server listening on 127.0.0.1:9000
+	#
+    ```
+ 3. Restart service:
+ 
+        $ service ngnix restart
+		
+
+## Remark
+  Don't forget to test, that the applcation works sucessully.
+        
+		$ http(s)://IP-Addresse or FQDN/mta-sts/
