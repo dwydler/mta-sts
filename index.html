@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 
-<html>
+<html lange="en">
 	<head>
 		<title>MTA-STS Validator</title>
 		<meta charset="utf-8"/>
@@ -14,14 +14,12 @@
 			<h1><a href=".">MTA-STS Validator</a></h1>
 
 			<!-- pattern: https://stackoverflow.com/a/106223/559350 -->
-			<p>
-				<form class="domain input-group input-group-lg">
-					<input placeholder="wydler.eu" type="text" autocapitalize="none" autocorrect="off" inputmode="verbatim" class="form-control" required pattern="(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]*[a-zA-Z0-9])\.)*([A-Za-z0-9]|[A-Za-z0-9][A-Za-z0-9\-]*[A-Za-z0-9])">
-					<span class="input-group-append">
-						<button class="btn btn-primary">Check!</button>
-					</span>
-				</form>
-			</p>
+			<form class="domain input-group input-group-lg">
+				<input placeholder="wydler.eu" type="text" autocapitalize="none" inputmode="verbatim" class="form-control" required pattern="(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]*[a-zA-Z0-9])\.)*([A-Za-z0-9]|[A-Za-z0-9][A-Za-z0-9\-]*[A-Za-z0-9])">
+				<span class="input-group-append">
+					<button class="btn btn-primary">Check!</button>
+				</span>
+			</form>
 
 			<div id="summary">
 			</div>
@@ -69,31 +67,31 @@ mx: backupmx.example.com</pre>
 				<h2>Details</h2>
 				<div class="report-mta-sts">
 					<h3 class="loading">
-						<div>MTA-STS TXT record</div>
+						<span>MTA-STS TXT record</span>
 					</h3>
 					<div class="contents"></div>
 				</div>
 				<div class="report-tlsrpt">
 					<h3 class="loading">
-						<div>SMTP-TLSRPT TXT record</div>
+						<span>SMTP-TLSRPT TXT record</span>
 					</h3>
 					<div class="contents"></div>
 				</div>
 				<div class="report-policy">
 					<h3 class="loading">
-						<div>Policy file</div>
+						<span>Policy file</span>
 					</h3>
 					<div class="contents"></div>
 				</div>
 				<div class="report-mx">
 					<h3 class="loading">
-						<div>Certificate check</div>
+						<span>Certificate check</span>
 					</h3>
 					<div class="contents"></div>
 				</div>
 				<div class="report-dane">
 					<h3 class="loading">
-						<div>DANE <sup style="font-weight: normal">[experimental]</sup></div>
+						<span>DANE <sup style="font-weight: normal">[experimental]</sup></span>
 					</h3>
 					<dl class="parts"></dl>
 				</div>
