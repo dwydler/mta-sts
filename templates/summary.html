@@ -31,7 +31,7 @@
 </dl>
 
 {% if report.rating >= 3 %}
-<p class="alert alert-info" role="alert"><strong>Note</strong>: even though the server appears to be set up correctly for MTA-STS, I recommend using a test like <a href="https://www.ssllabs.com/ssltest/analyze.html?d={{ report.domain }}&latest">Qualys SSL Labs</a> to analyze the HTTP host and to <a href="https://en.internet.nl/mail/{{ report.domain }}/">test the mail host</a>.</p>
+<p class="alert alert-info" role="alert"><strong>Note</strong>: even though the server appears to be set up correctly for MTA-STS, I recommend using a test like <a href="https://www.ssllabs.com/ssltest/analyze.html?d={{ report.domain }}&latest" target="_blank">Qualys SSL Labs</a> to analyze the HTTP host and to <a href="https://en.internet.nl/mail/{{ report.domain }}/" target="_blank">test the mail host</a>.</p>
 {% elif report.errorName %}{# global error #}
 <p class="alert alert-danger" role="alert">
 	<strong>Error</strong>:
