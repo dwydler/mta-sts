@@ -6,11 +6,15 @@ Online version: https://mta-sts-tester.cl01.daniel.wydler.eu/
 
 License: BSD 2-clause license (see LICENSE.txt).
 
-## Installing application on Ubuntu 18.04 LTS
+## Installing application on Ubuntu 22.04 LTS
 
  1. Install dependencies:
-
-        $ apt-get install uwsgi uwsgi-plugin-python3 python3-flask python3-flask-limiter python3-dnspython
+    ```
+    $ apt update
+    $ apt install uwsgi uwsgi-plugin-python3 python3-flask python3-dnspython
+    
+    $ apt install python3-pip
+    $ pip3 install Flask-Limiter
 
  2. Create a configuration file for uWSGI at `/etc/uwsgi/apps-available/emperor.ini`:
 
@@ -22,6 +26,7 @@ License: BSD 2-clause license (see LICENSE.txt).
 	limit-as = 512
 	reload-on-as = 128
 	reload-on-rss = 192
+	logto = /tmp/uwsgi.log
     ```
         $ chmod 644 /etc/uwsgi/apps-available/emperor.ini
         $ cd /etc/uwsgi/apps-enabled
@@ -37,6 +42,9 @@ License: BSD 2-clause license (see LICENSE.txt).
 
     ```ini
 	[uwsgi]
+	uid                = www-data
+	gid                = www-data
+	cap                = setgid,setuid
 	socket             = 127.0.0.1:17000
 	manage-script-name = true
 	mount              = /=check:app
@@ -52,28 +60,26 @@ License: BSD 2-clause license (see LICENSE.txt).
 
  5. Restart service:
  
-        $ service uwsgi restart		
+        $ systemctl restart uwsgi.service		
 
  6. Install the application:
 	
-        $ git clone https://github.com/dwydler/mta-sts /var/www/html/mta-sts
+        $ git clone --branch Customize https://github.com/dwydler/mta-sts /var/www/html/mta-sts
 		
 
  7. Install a montioring tool for it:
-	
-        $ apt-get install python3-pip
-		
+			
         $ pip3 install setuptools wheel
         $ pip3 install uwsgitop
 
         $ uwsgitop 127.0.0.1:17005
 
 		
-## Installing apache2 on Ubuntu 18.04 LTS
+## Installing apache2 on Ubuntu 22.04 LTS
 
  1. Install webserver and dependencies:
 
-        $ apt-get install apache2 apache2-dev
+        $ apt install apache2 apache2-dev
         $ wget https://github.com/unbit/uwsgi/raw/master/apache2/mod_proxy_uwsgi.c
         $ apxs2 -i -c mod_proxy_uwsgi.c
         $ a2enmod proxy_http
@@ -83,41 +89,43 @@ License: BSD 2-clause license (see LICENSE.txt).
     ```apache2
 	<VirtualHost *:80>
 	...
-    LoadModule proxy_uwsgi_module /usr/lib/apache2/modules/mod_proxy_uwsgi.so
-	ProxyPass /mta-sts/api uwsgi://127.0.0.1:17000
-	ProxyPassReverse /mta-sts/api uwsgi://127.0.0.1:17000
+	DocumentRoot /var/www/html/mta-sts
+	...
+	LoadModule proxy_uwsgi_module /usr/lib/apache2/modules/mod_proxy_uwsgi.so
+	ProxyPass /api uwsgi://127.0.0.1:17000
+	ProxyPassReverse /api uwsgi://127.0.0.1:17000
 	...
 	</VirtualHost>
     ```
 
  3. Restart service:
  
-        $ service apache2 restart
+        $ systemctl restart apache2.service
 
 
-## Installing nginx on Ubuntu 18.04 LTS
+## Installing nginx on Ubuntu 22.04 LTS
 
  1. Install webserver:
 
-        $ apt-get install nginx
+        $ apt install nginx
 
  2. Expand existing webserver configuration with these lines. For example `/etc/nginx/sites-enabled/default`:
 
     ```nginx
-		# proxy_cache_bypass $http_upgrade;
-	}
-	...
-	location = /mta-sts/api {
-		include uwsgi_params;
-		uwsgi_pass unix:/tmp/mta-sts.sock;
-	}
-	...
-	# pass the PHP scripts to FastCGI server listening on 127.0.0.1:9000
-	#
+    server {
+        ...
+        root /var/www/html/mta-sts/;
+        ....
+        location = /api {
+                include uwsgi_params;
+                uwsgi_pass 127.0.0.1:17000;
+        }
+        ...
+    }
     ```
  3. Restart service:
  
-        $ service ngnix restart
+        $ systemctl restart nginx.service
 		
 
 ## Remark
