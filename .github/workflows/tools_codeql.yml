@@ -47,7 +47,7 @@ jobs:
           - language: javascript-typescript
             build-mode: none
           - language: python
-            build-mode: none          
+            build-mode: none
           - language: "actions"
             build-mode: none
             # CodeQL supports the following values keywords for 'language': 'actions', 'c-cpp', 'csharp', 'go', 'java-kotlin', 'javascript-typescript', 'python', 'ruby', 'rust', 'swift'
@@ -100,4 +100,3 @@ jobs:
         uses: github/codeql-action/analyze@95e58e9a2cdfd71adc6e0353d5c52f41a045d225  # v4.35.2
         with:
           category: "/language:${{matrix.language}}"
-
