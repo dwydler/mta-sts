@@ -64,7 +64,7 @@ License: BSD 2-clause license (see LICENSE.txt).
 
  6. Install the application:
 	
-        $ git clone --branch Customize https://github.com/dwydler/mta-sts /var/www/html/mta-sts
+        $ git clone --branch Customize https://github.com/wydler/mta-sts /var/www/html/mta-sts
 		
 
  7. Install a montioring tool for it:
